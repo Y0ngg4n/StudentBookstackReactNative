@@ -20,6 +20,7 @@ import de from './locales/de';
 import en from './locales/en';
 import {Container} from 'native-base';
 import Document from './views/Pdf/Page/Document';
+import Orientation from 'react-native-orientation';
 
 export default class App extends React.Component {
 
@@ -46,11 +47,33 @@ export default class App extends React.Component {
         // });
         // console.log("Fonts loaded!")
         // this.setState({isReady: true});
+
+        Orientation.unlockAllOrientations();
+
+        Orientation.addOrientationListener(this._orientationDidChange);
+    }
+
+    componentWillUnmount() {
+        Orientation.getOrientation((err, orientation) => {
+            console.log(`Current Device Orientation: ${orientation}`);
+        });
+
+
+        // Remember to remove listener
+        Orientation.removeOrientationListener(this._orientationDidChange);
+    }
+
+    _orientationDidChange = (orientation) => {
+        if (orientation === 'LANDSCAPE') {
+            // do something with landscape layout
+        } else {
+            // do something with portrait layout
+        }
     }
 
     render() {
         return (
-            <SafeAreaView>
+            <SafeAreaView style={{flex: 1}}>
                 <Container>
                     <Document/>
                 </Container>
